@@ -2,5 +2,56 @@
 title: "Quarto 1"
 format: html
 author: Paramanyu Gupta
+execute: 
+  echo: false
 ---
 
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(palmerpenguins))
+```
+
+
+```{r}
+#| warning: false
+# Load required packages
+library(palmerpenguins)
+library(ggplot2)
+library(ggthemes)
+library(ggrepel)
+library(scales)
+
+# Create a polished scatterplot with annotations
+ggplot(data = penguins, 
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm, 
+           color = species, 
+           size = body_mass_g)) +
+  geom_point(alpha = 0.8) +
+  geom_text_repel(aes(label = ifelse(body_mass_g > 6000, 
+                                    as.character(island), "")),
+                  size = 3,
+                  color = "gray30",
+                  show.legend = FALSE) +
+  scale_color_manual(values = c("#FF6B6B", "#4ECDC4", "#45B7D1")) +
+  scale_size_continuous(range = c(2, 8), 
+                       labels = comma,
+                       breaks = seq(3000, 6000, by = 1000)) +
+  labs(title = "Penguin Bill Dimensions & Body Mass",
+       subtitle = "Relationship between bill measurements with species differentiation\nPoint size represents body mass (g)",
+       x = "Bill Length (mm)",
+       y = "Bill Depth (mm)",
+       color = "Species",
+       size = "Body Mass (g)",
+       caption = "Data from palmerpenguins package | Visualization by R") +
+  theme_fivethirtyeight() +
+  theme(plot.title = element_text(face = "bold", size = 18, hjust = 0.5),
+        plot.subtitle = element_text(size = 12, hjust = 0.5),
+        axis.title = element_text(),
+        legend.position = "right",
+        legend.box = "vertical",
+        panel.grid.major = element_line(color = "gray90"),
+        plot.background = element_rect(fill = "white"),
+        panel.background = element_rect(fill = "white")) +
+  guides(color = guide_legend(override.aes = list(size = 4)))
+```
